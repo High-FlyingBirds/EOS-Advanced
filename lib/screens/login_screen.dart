@@ -224,22 +224,9 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         TextButton(
           onPressed: () {
-            // TODO: [과제 2-2] 비밀번호 재설정 기능 구현
-            /*
-             * 비밀번호 재설정 과제
-             * 
-             * 구현 단계:
-             * 1. 이메일 입력 다이얼로그 구현
-             *    - AlertDialog 또는 SimpleDialog 사용
-             *    - TextEditingController를 사용하여 이메일 입력값 관리
-             *    - 취소/확인 버튼 제공
-             * 
-             * 2. 비밀번호 재설정 요청 처리
-             *    - FirebaseAuth.instance.sendPasswordResetEmail() 메서드 사용
-             *    - 이메일 형식 유효성 검증
-             *    - 요청 성공/실패에 따른 피드백 제공
-             *    - 오류 처리 (사용자가 존재하지 않을 경우 등)
-             */
+            // TODO: 비밀번호 재설정 기능 구현
+            // - 이메일 입력 다이얼로그 구현
+            // - FirebaseAuth.sendPasswordResetEmail() 사용
           },
           child: Text(
             '비밀번호 재설정',
@@ -257,30 +244,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         TextButton(
           onPressed: () {
-            // TODO: [과제 2-3] 회원가입 기능 구현
-            /*
-             * 회원가입 과제
-             * 
-             * 구현 단계:
-             * 1. 회원가입 입력 폼 구현
-             *    - 이메일 입력 필드
-             *    - 비밀번호 입력 필드 (obscureText: true)
-             *    - 비밀번호 확인 필드 (두 비밀번호 일치 여부 확인)
-             *    - 다이얼로그 또는 별도 화면으로 구현 가능
-             * 
-             * 2. 입력값 유효성 검사
-             *    - 이메일 형식 검증
-             *    - 비밀번호 길이 및 강도 검증 (6자 이상)
-             *    - 비밀번호-확인 일치 여부 확인
-             * 
-             * 3. Firebase 회원가입 요청 처리
-             *    - FirebaseAuth.instance.createUserWithEmailAndPassword() 메서드 사용
-             *    - 주요 오류 코드 처리:
-             *      > email-already-in-use: 이미 사용 중인 이메일
-             *      > weak-password: 취약한 비밀번호
-             *      > invalid-email: 유효하지 않은 이메일 형식
-             *    - 성공 시 자동 로그인 처리
-             */
+            // TODO: 회원가입 기능 구현
+            // - 이메일, 비밀번호 입력 필드 추가
+            // - FirebaseAuth.createUserWithEmailAndPassword() 사용
           },
           child: Text(
             '회원가입',
@@ -358,24 +324,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
 
-          // 이용약관 동의 안내 텍스트
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Text(
-              'ⓘ 로그인하면 이용약관 및 개인정보활용에 동의하게 됩니다.',
-              textAlign: TextAlign.center,
-              style: theme.typo.body2.copyWith(
-                color: theme.color.onHintContainer,
-              ),
-            ),
-          ),
+          // 이용약관 동의 등의 링크는 여기 추가 가능
         ],
       ),
     );
   }
 
-  /// 소셜 로그인 버튼 생성 헬퍼 메서드
-  /// - SVG 아이콘을 포함한 소셜 로그인 버튼을 생성합니다.
+  /// 소셜 로그인 버튼 생성
   Widget _buildSocialButton({
     required String text,
     required VoidCallback onPressed,
@@ -384,78 +339,48 @@ class _LoginScreenState extends State<LoginScreen> {
     required String iconPath,
     Color? iconColor,
   }) {
-    return _buildButton(
-      text: text,
-      onPressed: onPressed,
-      backgroundColor: backgroundColor,
-      textColor: textColor,
-      icon: SvgPicture.asset(
-        iconPath,
-        width: 24,
-        height: 24,
-        colorFilter: iconColor != null
-            ? ColorFilter.mode(iconColor, BlendMode.srcIn)
-            : null,
+    return SizedBox(
+      height: 54,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          foregroundColor: textColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        onPressed: onPressed,
+        icon: SvgPicture.asset(
+          iconPath,
+          height: 24,
+          width: 24,
+          color: iconColor,
+        ),
+        label: Text(
+          text,
+          style: theme.typo.subtitle1.copyWith(color: textColor),
+        ),
       ),
     );
   }
 
-  /// 이메일 로그인 처리 메서드
+  // 이메일 로그인 처리 (Firebase 인증 등을 이용할 수 있습니다)
   void _handleEmailLogin(BuildContext context) {
-    // TODO: [과제 2-1] Firebase Auth를 사용한 이메일 로그인 구현
-    /*
-     * 이메일/비밀번호 로그인 구현 과제
-     * 
-     * 구현 단계:
-     * 1. 입력값 유효성 검사
-     *    - 이메일 형식: RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)
-     *    - 비밀번호 검증: password.length >= 6
-     * 
-     * 2. Firebase 로그인 요청 전송
-     *    - FirebaseAuth.instance.signInWithEmailAndPassword() 메서드 사용
-     *    - 로그인 성공 시 HomeScreen으로 자동 이동 (authStateChanges 사용)
-     *    - 주요 오류 코드 처리:
-     *      > user-not-found: 등록되지 않은 이메일
-     *      > wrong-password: 잘못된 비밀번호
-     *      > invalid-email: 유효하지 않은 이메일 형식
-     *      > user-disabled: 비활성화된 계정
-     *    - 오류 메시지를 SnackBar로 사용자에게 표시
-     */
-
-    // 입력값 검증 (현재 코드는 유지)
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('이메일과 비밀번호를 모두 입력해주세요.')),
-      );
-      return;
-    }
-
-    // 테스트용 로그인 메시지 (실제 구현 시 제거)
-    _showLoginMessage(context, '이메일');
+    // TODO: 이메일 로그인 구현
   }
 
-  /// 카카오 로그인 처리 메서드
+  // 카카오 로그인 처리
   void _handleKakaoLogin(BuildContext context) {
-    // 카카오 로그인 로직 구현 위치
-    _showLoginMessage(context, '카카오');
+    // TODO: 카카오 로그인 기능 구현
   }
 
-  /// 구글 로그인 처리 메서드
+  // 구글 로그인 처리
   void _handleGoogleLogin(BuildContext context) {
-    // 구글 로그인 로직 구현 위치
-    _showLoginMessage(context, '구글');
+    // TODO: 구글 로그인 기능 구현
   }
 
-  /// 애플 로그인 처리 메서드
+  // 애플 로그인 처리
   void _handleAppleLogin(BuildContext context) {
-    // 애플 로그인 로직 구현 위치
-    _showLoginMessage(context, '애플');
-  }
-
-  /// 테스트용 로그인 메시지 표시
-  void _showLoginMessage(BuildContext context, String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$provider 로그인 시도 중...')),
-    );
+    // TODO: 애플 로그인 기능 구현
   }
 }
